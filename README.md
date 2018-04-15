@@ -22,9 +22,9 @@ DISCLAIMER: I am not responsible for any damage caused by this script.
 Keep all pets away and don't let them near you while you're working with this sc
 ript.
 
-current version:
+current version / download:
 ------------  
-0.1alpha   
+[0.1alpha](https://github.com/spookyahell/RDtool/releases/download/0.1alpha/RDtool.py)
    
 optional arguments:
 ------------
