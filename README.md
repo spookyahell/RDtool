@@ -1,5 +1,5 @@
 # RDtool
-A small tool written in python (not to be installed from python - single python file) 
+A small tool written in python (not to be installed from pip - single python file) 
 
 Currently only one external module required:
 [requests](https://pypi.python.org/pypi/requests)
