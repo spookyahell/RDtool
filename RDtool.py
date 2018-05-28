@@ -80,7 +80,7 @@ if args.textfile:
 if (args.addMagnet != None):
 	postdata = {'host':'real-debrid.com','split':'2', 'magnet':args.addMagnet}
 	r = requests.post('https://api.real-debrid.com/rest/1.0/torrents/addMagnet', 
-		data = postdata, headers = headers, verify=False)
+		data = postdata, headers = headers)
 	#~ print(r.text)
 	#~ 
 	cookies = f'https=1; lang=de; cookie_accept=y; auth={apitoken}; session-set=true'
@@ -90,7 +90,7 @@ if (args.addMagnet != None):
 	
 	def getTorrentInfo():
 		r2 = requests.get('https://api.real-debrid.com/rest/1.0/torrents/info/'+r.json()['id'], 
-			headers = headers, verify=False)
+			headers = headers)
 		print(r.json()['id'])
 		jsonfiles = r2.json()['files']
 		if  len(jsonfiles) == 0:
