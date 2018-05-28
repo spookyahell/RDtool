@@ -33,7 +33,7 @@ optional arguments:
      
       -h, --help                     | show this help message and exit
 
-      --addMagnet ADDMAGNET          | add a magnet
+      --addMagnet ADDMAGNET          | add a magnet (Don't forget to quote it!)
 
       --apitoken OR -t APITOKEN      | set the API token, get it from real-debrid.com/apitoken
 
