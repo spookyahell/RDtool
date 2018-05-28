@@ -19,8 +19,7 @@ Usage:
               
 Unlawful distribution or even usage is strictly prohibited.
 DISCLAIMER: I am not responsible for any damage caused by this script.
-Keep all pets away and don't let them near you while you're working with this sc
-ript.
+Keep all pets away and don't let them near you while you're working with this script.
 
 current version / download:
 ------------  
