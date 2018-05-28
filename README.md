@@ -33,16 +33,13 @@ optional arguments:
      
       -h, --help                     | show this help message and exit
 
-      --addMagnet ADDMAGNET
-                                     | add a magnet
+      --addMagnet ADDMAGNET          | add a magnet
 
-      --apitoken APITOKEN, -t APITOKEN
-                                     | set the API token, get it from real-debrid.com/apitoken
+      --apitoken OR -t APITOKEN      | set the API token, get it from real-debrid.com/apitoken
 
       --silent, -s                   | silent mode
 
-      --silent-link-only, -slo
-                                     | silent link only
+      --silent-link-only, -slo       | silent link only
 
       --textfile, -txt               | Create a textfile with the links
       
