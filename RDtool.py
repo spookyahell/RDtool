@@ -4,7 +4,7 @@ from time import sleep
 import os
 import sys
 
-version = '0.1alpha'
+version = '0.2alpha'
 
 parser = argparse.ArgumentParser(prog='RD-tool',formatter_class=argparse.RawTextHelpFormatter, 
 description='This python script is the work of @spookyahell (Github username).\n'+
