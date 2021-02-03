@@ -38,12 +38,12 @@ if (args.apitoken != None):
 	tokenfile.close()
 	print('Token saved')
 elif (os.path.isfile('RDtoken.txt')):
-		tokenfile = open('RDtoken.txt','r') 
-		apitoken = tokenfile.readline().rstrip('\n')
-		if not args.silent and not args.silent_link_only:
-			print('No token specified, but saved token found')
-			print(f'Using token {apitoken}...')
-			print()
+	tokenfile = open('RDtoken.txt','r') 
+	apitoken = tokenfile.readline().rstrip('\n')
+	if not args.silent and not args.silent_link_only:
+		print('No token specified, but saved token found')
+		print(f'Using token {apitoken}...')
+		print()
 else:
 	print('You must specify a token via --apitoken first.')
 	sys.exit(1)
@@ -81,10 +81,10 @@ if (args.addMagnet != None):
 	#~ print(r.text)
 	#~ 
 	cookies = f'https=1; lang=de; cookie_accept=y; auth={apitoken}; session-set=true'
-	
+
 	errorcodes = {202 : 'Action already done', 400 : 'Bad request',
 		401: 'Bad token', 403:  'Permession deinied, check if premium', 404 : 'Invalid file ids'}
-	
+
 	def get_torrent_info():
 		r2 = requests.get(BASE_API_URL + 'torrents/info/'+r.json()['id'], 
 			headers = headers)
