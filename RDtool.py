@@ -1,4 +1,4 @@
-﻿import requests
+import requests
 import argparse
 from time import sleep
 import os
@@ -26,33 +26,29 @@ parser.add_argument('--textfile', '-txt',
                     help='Create a textfile with the links', action='store_true')
 args = parser.parse_args()
 
+BASE_DOMAIN = "real-debrid.com"
+BASE_API_URL = "https://api." + BASE_DOMAIN + "/rest/1.0/"
+
 if not args.silent and not args.silent_link_only:
 	print('Welcome to the unofficial RD tool!')
 
-#~ jar1 = requests.cookies.RequestsCookieJar()
-#~ jar1.set('', 'VWU5Zvhizf')
 if (args.apitoken != None):
 	tokenfile = open('RDtoken.txt','w') 
 	tokenfile.write(args.apitoken)
 	tokenfile.close()
 	print('Token saved')
-else:
-	if (os.path.isfile('RDtoken.txt')):
+elif (os.path.isfile('RDtoken.txt')):
+		tokenfile = open('RDtoken.txt','r') 
+		apitoken = tokenfile.readline().rstrip('\n')
 		if not args.silent and not args.silent_link_only:
 			print('No token specified, but saved token found')
-		
-if (os.path.isfile('RDtoken.txt')):
-	tokenfile = open('RDtoken.txt','r') 
-	apitoken = tokenfile.readline()
-	if not args.silent and not args.silent_link_only:
-		print(f'Using token {apitoken}...')
-		print()
+			print(f'Using token {apitoken}...')
+			print()
 else:
 	print('You must specify a token via --apitoken first.')
 	sys.exit(1)
 
 headers = {'Authorization': f'Bearer {apitoken}'}
-
 
 if len(args.urls) == 0:
 	if not args.silent and not args.silent_link_only:
@@ -64,8 +60,9 @@ else:
 
 for url in args.urls:
 	data = {'link': url, 'password':''}
-	r = requests.post('https://api.real-debrid.com/rest/1.0/unrestrict/link', data = data, headers = headers)
+	r = requests.post(BASE_API_URL + 'unrestrict/link', data = data, headers = headers)
 	linkdata = r.json()
+	r.close()
 	if not args.silent_link_only:
 		print(linkdata['filename']+'\n'+linkdata['download'])
 	else:
@@ -78,8 +75,8 @@ if args.textfile:
 	links.close()
 
 if (args.addMagnet != None):
-	postdata = {'host':'real-debrid.com','split':'2', 'magnet':args.addMagnet}
-	r = requests.post('https://api.real-debrid.com/rest/1.0/torrents/addMagnet', 
+	postdata = {'host':BASE_DOMAIN,'split':'2', 'magnet':args.addMagnet}
+	r = requests.post(BASE_API_URL + 'torrents/addMagnet', 
 		data = postdata, headers = headers)
 	#~ print(r.text)
 	#~ 
@@ -88,11 +85,12 @@ if (args.addMagnet != None):
 	errorcodes = {202 : 'Action already done', 400 : 'Bad request',
 		401: 'Bad token', 403:  'Permession deinied, check if premium', 404 : 'Invalid file ids'}
 	
-	def getTorrentInfo():
-		r2 = requests.get('https://api.real-debrid.com/rest/1.0/torrents/info/'+r.json()['id'], 
+	def get_torrent_info():
+		r2 = requests.get(BASE_API_URL + 'torrents/info/'+r.json()['id'], 
 			headers = headers)
 		print(r.json()['id'])
 		jsonfiles = r2.json()['files']
+		r2.close()
 		if  len(jsonfiles) == 0:
 			print('This is weired. Maybe it does not work as well as the developer thought?')
 		else:
@@ -101,27 +99,26 @@ if (args.addMagnet != None):
 			print('Okay, now we\'ll need a comma seperated list of indexes for files you want.')
 			selectedfiles = input('List of IDs or ALL: ') 
 			postdata = {'files': selectedfiles}
-			r3 = requests.post('https://api.real-debrid.com/rest/1.0/torrents/selectFiles/'+r.json()['id'], data = postdata, headers = headers, verify=False)
+			r3 = requests.post(BASE_API_URL + 'torrents/selectFiles/'+r.json()['id'], data = postdata, headers = headers, verify=False)
 			if r3.status_code == 204:
 				print('Yay, torrent has been added and will now be downloaded')
 			else:
-				error = errorcodes[status_code]
+				error = errorcodes[r3.status_code]
 				print(f'Oops! Error: {error}')
-				
-	def checkForFilesAvailable():
-		r2 = requests.get('https://real-debrid.com/ajax/torrent_files.php?id='+r.json()['id'], headers = {'Cookie':cookies,'X-Requested-With':'XMLHttpRequest'})
+
+	def check_files_availability():
+		r2 = requests.get('https://' + BASE_DOMAIN + '/ajax/torrent_files.php?id='+r.json()['id'], headers = {'Cookie':cookies,'X-Requested-With':'XMLHttpRequest'})
 		if 'setInterval' in r2.text:
 			print('Sleeping for 5 seconds...')
+			r2.close()
 			sleep(5)
 			print('Checking if files available...')
-			checkForFilesAvailable()
+			check_files_availability()
 		else:
 			print('Okay, seems like the torrent may actually be available.')
-			getTorrentInfo()
-	checkForFilesAvailable()
+			r2.close()
+			get_torrent_info()
+	check_files_availability()
 	
 	print(r.json()['id'])
-else:
-	if not args.silent and not args.silent_link_only:
-		print()
-		print('No magnet to add')
+	r.close()
