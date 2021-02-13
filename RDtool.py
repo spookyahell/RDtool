@@ -29,6 +29,28 @@ args = parser.parse_args()
 BASE_DOMAIN = "real-debrid.com"
 BASE_API_URL = "https://api." + BASE_DOMAIN + "/rest/1.0/"
 
+def debrid_url(url, is_folder = False):
+	data = {'link': url, 'password':''}
+	if (is_folder):
+		r = requests.post(BASE_API_URL + 'unrestrict/folder', data = data, headers = headers)
+		linksdata = r.json()
+		r.close()
+		for link in linksdata:
+			debrid_url(link)
+	else:
+		r = requests.post(BASE_API_URL + 'unrestrict/link', data = data, headers = headers)
+		linkdata = r.json()
+		r.close()
+		if (linkdata.get('error_code') != None):
+			print("Error: "+str(linkdata['error_code'])+" - "+linkdata['error'])
+		else:
+			if not args.silent_link_only:
+				print(linkdata['filename']+'\n'+linkdata['download'])
+			else:
+				print(linkdata['download'])
+			if args.textfile:
+				linkvalues.append(linkdata['download'])
+
 if not args.silent and not args.silent_link_only:
 	print('Welcome to the unofficial RD tool!')
 
@@ -59,17 +81,8 @@ else:
 		linkvalues = []
 
 for url in args.urls:
-	data = {'link': url, 'password':''}
-	r = requests.post(BASE_API_URL + 'unrestrict/link', data = data, headers = headers)
-	linkdata = r.json()
-	r.close()
-	if not args.silent_link_only:
-		print(linkdata['filename']+'\n'+linkdata['download'])
-	else:
-		print(linkdata['download'])
-	if args.textfile:
-		linkvalues.append(linkdata['download'])
-		
+	debrid_url(url, (url.find("folder") != -1))
+	
 if args.textfile:
 	links.write('\n'.join(linkvalues))
 	links.close()
