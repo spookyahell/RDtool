@@ -24,6 +24,8 @@ parser.add_argument('--silent-link-only', '-slo',
                     help='silent link only', action='store_true')
 parser.add_argument('--textfile', '-txt',
                     help='Create a textfile with the links', action='store_true')
+parser.add_argument('--multiline-url-input', '-mlui',
+                    help='Take urls seperated by newline as input (Enter "RDtool" without quotes as last line to stop taking inputs)', action='store_true')
 args = parser.parse_args()
 
 BASE_DOMAIN = "real-debrid.com"
@@ -71,6 +73,16 @@ else:
 	sys.exit(1)
 
 headers = {'Authorization': f'Bearer {apitoken}'}
+
+if args.multiline_url_input:
+	print("Enter urls seperated by new line. Once done, send 'RDtool' without quotes as last line.")
+	newUrls = []
+	inpUrl = ""
+	while(inpUrl != "RDtool"):
+		if inpUrl != "":
+			newUrls.append(inpUrl)
+		inpUrl = input().strip()
+	args.urls.extend(newUrls)
 
 if len(args.urls) == 0:
 	if not args.silent and not args.silent_link_only:
